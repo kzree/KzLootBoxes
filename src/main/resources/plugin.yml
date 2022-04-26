@@ -1,0 +1,9 @@
+name: KzLootboxes
+version: '${project.version}'
+main: com.kzree.lootboxes.LootBoxes
+api-version: 1.18
+authors: [ Kzree ]
+description: Lootboxes that give random loot!
+commands:
+  givelootboxkey:
+    description: Gives the player a lootbox key
