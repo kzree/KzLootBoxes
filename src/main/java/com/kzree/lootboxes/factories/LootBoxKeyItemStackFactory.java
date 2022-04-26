@@ -41,7 +41,7 @@ public class LootBoxKeyItemStackFactory {
         String baseText = "What might be in this?";
         return switch (lootBoxRarity) {
             case COMMON -> ChatColor.GRAY + baseText;
-            case RARE -> ChatColor.DARK_PURPLE + baseText;
+            case RARE -> ChatColor.WHITE + baseText;
             case ULTRA_RARE -> ChatColor.RED + baseText;
         };
     }
