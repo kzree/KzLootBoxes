@@ -18,6 +18,16 @@ public class UseLootBoxKeyListener implements Listener {
         this.plugin = plugin;
     }
 
+    private void handleLootBoxUse(Player player, ItemStack lootboxKey) {
+        player.sendMessage(ChatColor.GREEN + "You just tried to open a lootbox!");
+
+        if (lootboxKey.getAmount() > 1) {
+            lootboxKey.setAmount(lootboxKey.getAmount() - 1);
+        } else {
+            player.getInventory().remove(lootboxKey);
+        }
+    }
+
     @EventHandler
     public void onLootBoxKeyUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -27,13 +37,7 @@ public class UseLootBoxKeyListener implements Listener {
         if (itemInMainHandItemMeta != null) {
             String keyValue = itemInMainHandItemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING);
             if (keyValue != null && keyValue.equals("loot-key")) {
-                player.sendMessage(ChatColor.GREEN + "You just tried to open a lootbox!");
-
-                if (itemInMainHand.getAmount() > 1) {
-                    itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
-                } else {
-                    player.getInventory().remove(itemInMainHand);
-                }
+                handleLootBoxUse(player, itemInMainHand);
             }
         }
     }
