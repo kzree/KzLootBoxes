@@ -24,12 +24,14 @@ public class UseLootBoxKeyListener implements Listener {
 
     // TODO: Improve lootbox type displaying
     private void createLootBoxGUI(Player player, LootBoxRarity lootBoxRarity) {
-        Inventory gui = Bukkit.createInventory(player, 27, "Loot box ("+ lootBoxRarity.name().toLowerCase() + ")");
+        Inventory gui = Bukkit.createInventory(player, 27, "Loot box ("+ lootBoxRarity.getFormattedName() + ")");
         player.openInventory(gui);
     }
 
     private void handleLootBoxUse(Player player, ItemStack lootboxKey, LootBoxRarity lootBoxRarity) {
-        player.sendMessage(ChatColor.GREEN + "You just tried to open a lootbox!");
+        player.sendMessage(ChatColor.GREEN + "You just opened a "
+                + lootBoxRarity.getPrimaryColor() + lootBoxRarity.getFormattedName()
+                + ChatColor.GREEN + " lootbox");
         createLootBoxGUI(player, lootBoxRarity);
 
         if (lootboxKey.getAmount() > 1) {

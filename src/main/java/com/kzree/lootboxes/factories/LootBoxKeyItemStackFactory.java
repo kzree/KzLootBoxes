@@ -2,7 +2,6 @@ package com.kzree.lootboxes.factories;
 
 import com.kzree.lootboxes.LootBoxRarity;
 import com.kzree.lootboxes.LootBoxes;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -28,24 +27,6 @@ public class LootBoxKeyItemStackFactory {
         }
     }
 
-    private String getLootBoxKeyName(LootBoxRarity lootBoxRarity) {
-        String nameBase = "Loot key";
-        return switch (lootBoxRarity) {
-            case COMMON -> ChatColor.BLUE + nameBase;
-            case RARE -> ChatColor.LIGHT_PURPLE + nameBase;
-            case ULTRA_RARE -> ChatColor.GOLD + nameBase;
-        };
-    }
-
-    private String getLootBoxKeyLore(LootBoxRarity lootBoxRarity) {
-        String baseText = "What might be in this?";
-        return switch (lootBoxRarity) {
-            case COMMON -> ChatColor.GRAY + baseText;
-            case RARE -> ChatColor.WHITE + baseText;
-            case ULTRA_RARE -> ChatColor.RED + baseText;
-        };
-    }
-
     private void addLootBoxKeyTags(ItemMeta meta, LootBoxRarity lootBoxRarity) {
         if (meta != null) {
             NamespacedKey itemTypeKey = new NamespacedKey(plugin, "item-type");
@@ -58,9 +39,9 @@ public class LootBoxKeyItemStackFactory {
     private void createLootBoxKeyMeta(ItemStack itemStack, LootBoxRarity lootBoxRarity) {
         final ItemMeta meta = itemStack.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(getLootBoxKeyName(lootBoxRarity));
+            meta.setDisplayName(lootBoxRarity.getPrimaryColor() + "Loot key");
             ArrayList<String> lore = new ArrayList<>();
-            lore.add(getLootBoxKeyLore(lootBoxRarity));
+            lore.add(lootBoxRarity.getSecondaryColor() + "What might be in this?");
             addLootBoxKeyTags(meta, lootBoxRarity);
             meta.setLore(lore);
         }
