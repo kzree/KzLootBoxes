@@ -2,6 +2,8 @@ package com.kzree.lootboxes.listeners;
 
 import com.kzree.lootboxes.LootBoxRarity;
 import com.kzree.lootboxes.LootBoxes;
+import com.kzree.lootboxes.LootRollRarity;
+import com.kzree.lootboxes.utility.WeightedRandomGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -15,11 +17,21 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Arrays;
+
 public class UseLootBoxKeyListener implements Listener {
     private final LootBoxes plugin;
+    private final WeightedRandomGenerator<LootRollRarity> weightedRandomGenerator;
 
     public UseLootBoxKeyListener(LootBoxes plugin) {
         this.plugin = plugin;
+        this.weightedRandomGenerator = new WeightedRandomGenerator<>();
+        Arrays.asList(LootRollRarity.values()).forEach(lootRollRarity -> {
+            double rarityWeight = lootRollRarity.getCommonLootBoxRarity();
+            if (rarityWeight > 0.0) {
+                this.weightedRandomGenerator.addEntry(lootRollRarity, rarityWeight);
+            }
+        });
     }
 
     // TODO: Improve lootbox type displaying
@@ -28,11 +40,19 @@ public class UseLootBoxKeyListener implements Listener {
         player.openInventory(gui);
     }
 
+    private void handleLootRoll(Player player) {
+        LootRollRarity rollRarity = this.weightedRandomGenerator.getRandom();
+        if (rollRarity != null) {
+            player.sendMessage("You rolled with rarity: " + rollRarity.name());
+        }
+    }
+
     private void handleLootBoxUse(Player player, ItemStack lootboxKey, LootBoxRarity lootBoxRarity) {
         player.sendMessage(ChatColor.GREEN + "You just opened a "
                 + lootBoxRarity.getPrimaryColor() + lootBoxRarity.getFormattedName()
                 + ChatColor.GREEN + " lootbox");
         createLootBoxGUI(player, lootBoxRarity);
+        handleLootRoll(player);
 
         if (lootboxKey.getAmount() > 1) {
             lootboxKey.setAmount(lootboxKey.getAmount() - 1);
