@@ -3,6 +3,7 @@ package com.kzree.lootboxes.listeners;
 import com.kzree.lootboxes.LootBoxRarity;
 import com.kzree.lootboxes.LootBoxes;
 import com.kzree.lootboxes.LootRollRarity;
+import com.kzree.lootboxes.factories.LootRollRewardItemStackListFactory;
 import com.kzree.lootboxes.utility.WeightedRandomGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,33 +19,29 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
+import java.util.List;
+
+import static com.kzree.lootboxes.utility.NumberUtilities.randomUniqueNumbers;
 
 public class UseLootBoxKeyListener implements Listener {
     private final LootBoxes plugin;
-    private final WeightedRandomGenerator<LootRollRarity> weightedRandomGenerator;
+    private final LootRollRewardItemStackListFactory lootRollRewardItemStackListFactory;
 
     public UseLootBoxKeyListener(LootBoxes plugin) {
         this.plugin = plugin;
-        this.weightedRandomGenerator = new WeightedRandomGenerator<>();
-        Arrays.asList(LootRollRarity.values()).forEach(lootRollRarity -> {
-            double rarityWeight = lootRollRarity.getCommonLootBoxRarity();
-            if (rarityWeight > 0.0) {
-                this.weightedRandomGenerator.addEntry(lootRollRarity, rarityWeight);
-            }
-        });
+        lootRollRewardItemStackListFactory = new LootRollRewardItemStackListFactory();
     }
 
-    // TODO: Improve lootbox type displaying
     private void createLootBoxGUI(Player player, LootBoxRarity lootBoxRarity) {
         Inventory gui = Bukkit.createInventory(player, 27, "Loot box ("+ lootBoxRarity.getFormattedName() + ")");
+        List<ItemStack> items = lootRollRewardItemStackListFactory.generateRandomLootBoxRewardItemStack(lootBoxRarity);
+        List<Integer> itemSlots = randomUniqueNumbers(3, 0, 26);
+        final int[] itemIndex = {0};
+        items.forEach(itemStack -> {
+            gui.setItem(itemSlots.get(itemIndex[0]), itemStack);
+            itemIndex[0]++;
+        });
         player.openInventory(gui);
-    }
-
-    private void handleLootRoll(Player player) {
-        LootRollRarity rollRarity = this.weightedRandomGenerator.getRandom();
-        if (rollRarity != null) {
-            player.sendMessage("You rolled with rarity: " + rollRarity.name());
-        }
     }
 
     private void handleLootBoxUse(Player player, ItemStack lootboxKey, LootBoxRarity lootBoxRarity) {
@@ -52,7 +49,6 @@ public class UseLootBoxKeyListener implements Listener {
                 + lootBoxRarity.getPrimaryColor() + lootBoxRarity.getFormattedName()
                 + ChatColor.GREEN + " lootbox");
         createLootBoxGUI(player, lootBoxRarity);
-        handleLootRoll(player);
 
         if (lootboxKey.getAmount() > 1) {
             lootboxKey.setAmount(lootboxKey.getAmount() - 1);
