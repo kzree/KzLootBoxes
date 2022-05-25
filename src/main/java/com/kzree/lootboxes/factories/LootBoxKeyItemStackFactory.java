@@ -2,6 +2,7 @@ package com.kzree.lootboxes.factories;
 
 import com.kzree.lootboxes.LootBoxRarity;
 import com.kzree.lootboxes.LootBoxes;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -39,7 +40,7 @@ public class LootBoxKeyItemStackFactory {
     private void createLootBoxKeyMeta(ItemStack itemStack, LootBoxRarity lootBoxRarity) {
         final ItemMeta meta = itemStack.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(lootBoxRarity.getPrimaryColor() + "Loot key");
+            meta.setDisplayName(lootBoxRarity.getPrimaryColor() + "" + ChatColor.BOLD + "Loot key");
             ArrayList<String> lore = new ArrayList<>();
             lore.add(lootBoxRarity.getSecondaryColor() + "What might be in this?");
             addLootBoxKeyTags(meta, lootBoxRarity);

@@ -18,7 +18,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static com.kzree.lootboxes.utility.NumberUtilities.randomUniqueNumbers;
@@ -29,7 +28,7 @@ public class UseLootBoxKeyListener implements Listener {
 
     public UseLootBoxKeyListener(LootBoxes plugin) {
         this.plugin = plugin;
-        lootRollRewardItemStackListFactory = new LootRollRewardItemStackListFactory();
+        lootRollRewardItemStackListFactory = new LootRollRewardItemStackListFactory(plugin);
     }
 
     private void createLootBoxGUI(Player player, LootBoxRarity lootBoxRarity) {
